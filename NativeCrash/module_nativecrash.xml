@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_nativecrash" default="compile.module.nativecrash">
+  <dirname property="module.nativecrash.basedir" file="${ant.file.module_nativecrash}"/>
+  
+  <property name="module.jdk.home.nativecrash" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.nativecrash" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.nativecrash" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.nativecrash" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="nativecrash.output.dir" value="${module.nativecrash.basedir}/out/production/NativeCrash"/>
+  <property name="nativecrash.testoutput.dir" value="${module.nativecrash.basedir}/out/test/NativeCrash"/>
+  
+  <path id="nativecrash.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="nativecrash.module.production.classpath">
+    <path refid="${module.jdk.classpath.nativecrash}"/>
+    <path refid="library.controlsfx-8.20.9.classpath"/>
+    <path refid="library.openjfx-dialogs-1.0.3.classpath"/>
+  </path>
+  
+  <path id="nativecrash.runtime.production.module.classpath">
+    <pathelement location="${nativecrash.output.dir}"/>
+    <path refid="library.controlsfx-8.20.9.classpath"/>
+    <path refid="library.openjfx-dialogs-1.0.3.classpath"/>
+  </path>
+  
+  <path id="nativecrash.module.classpath">
+    <path refid="${module.jdk.classpath.nativecrash}"/>
+    <pathelement location="${nativecrash.output.dir}"/>
+    <path refid="library.controlsfx-8.20.9.classpath"/>
+    <path refid="library.openjfx-dialogs-1.0.3.classpath"/>
+  </path>
+  
+  <path id="nativecrash.runtime.module.classpath">
+    <pathelement location="${nativecrash.testoutput.dir}"/>
+    <pathelement location="${nativecrash.output.dir}"/>
+    <path refid="library.controlsfx-8.20.9.classpath"/>
+    <path refid="library.openjfx-dialogs-1.0.3.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.nativecrash">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.nativecrash">
+    <patternset refid="excluded.from.module.nativecrash"/>
+  </patternset>
+  
+  <path id="nativecrash.module.sourcepath">
+    <dirset dir="${module.nativecrash.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.nativecrash" depends="compile.module.nativecrash.production,compile.module.nativecrash.tests" description="Compile module NativeCrash"/>
+  
+  <target name="compile.module.nativecrash.production" depends="register.custom.compilers" description="Compile module NativeCrash; production classes">
+    <mkdir dir="${nativecrash.output.dir}"/>
+    <javac2 destdir="${nativecrash.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.nativecrash}/javac">
+      <compilerarg line="${compiler.args.nativecrash}"/>
+      <bootclasspath refid="nativecrash.module.bootclasspath"/>
+      <classpath refid="nativecrash.module.production.classpath"/>
+      <src refid="nativecrash.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.nativecrash"/>
+    </javac2>
+    
+    <copy todir="${nativecrash.output.dir}">
+      <fileset dir="${module.nativecrash.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.nativecrash.tests" depends="register.custom.compilers,compile.module.nativecrash.production" description="compile module NativeCrash; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.nativecrash" description="cleanup module">
+    <delete dir="${nativecrash.output.dir}"/>
+    <delete dir="${nativecrash.testoutput.dir}"/>
+  </target>
+</project>
