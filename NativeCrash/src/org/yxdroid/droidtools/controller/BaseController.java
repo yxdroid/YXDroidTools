@@ -5,6 +5,7 @@ import javafx.scene.control.Alert;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.controlsfx.dialog.Dialogs;
 import org.yxdroid.droidtools.MainApplication;
 
 import java.io.BufferedReader;
@@ -70,12 +71,22 @@ public abstract class BaseController implements Initializable, ControllerInit {
                 .masthead(masthead)
                 .message(message)
                 .showInformation();*/
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(masthead);
-        alert.setContentText(message);
+        try {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle(title);
+            alert.setHeaderText(masthead);
+            alert.setContentText(message);
 
-        alert.showAndWait();
+            alert.showAndWait();
+        } catch (Exception e) {
+            // 兼容jdk 8u40 和 8u20 对话框使用
+            Dialogs.create()
+                    .owner(stage)
+                    .title(title)
+                    .masthead(masthead)
+                    .message(message)
+                    .showInformation();
+        }
     }
 
     // http://code.makery.ch/blog/javafx-8-dialogs/ 对话框使用方式

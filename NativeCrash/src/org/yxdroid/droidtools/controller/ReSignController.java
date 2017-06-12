@@ -12,6 +12,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
+import org.controlsfx.control.action.Action;
+import org.controlsfx.dialog.Dialogs;
 import org.yxdroid.droidtools.os.OSinfo;
 
 import java.io.File;
@@ -20,6 +22,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
+
+import static org.controlsfx.dialog.Dialog.ACTION_CANCEL;
+import static org.controlsfx.dialog.Dialog.ACTION_YES;
 
 public class ReSignController extends BaseController {
 
@@ -109,25 +114,33 @@ public class ReSignController extends BaseController {
             } else {
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            if (isEmpty(runResult)) {
-                showTip("提示", "签名失败!", e.getMessage());
-                return;
+            // 兼容jdk 8u40 和 8u20 对话框使用
+            if (e instanceof NullPointerException) {
+
+                Action response = Dialogs.create()
+                        .owner(stage)
+                        .title("提示")
+                        .masthead("签名成功!")
+                        .message("是否打开已签名APK文件目录?")
+                        .actions(ACTION_CANCEL, ACTION_YES)
+                        .showConfirm();
+                if (response == ACTION_YES) {
+                    if (OSinfo.isMacOS() || OSinfo.isMacOSX()) {
+                        Runtime.getRuntime().exec("open " + outPathFile.getParentFile().getAbsolutePath());
+                    } else if (OSinfo.isWindows()) {
+                        Runtime.getRuntime().exec("explorer.exe " + outPathFile.getParentFile().getAbsolutePath());
+                    }
+                } else {
+
+                }
+            } else {
+                if (isEmpty(runResult)) {
+                    showTip("提示", "签名失败!", e.getMessage());
+                    return;
+                }
             }
+
         }
-
-
-        /*Action response = Dialogs.create()
-                .owner(stage)
-                .title("提示")
-                .masthead("签名成功!")
-                .message("是否打开已签名APK文件目录?")
-                .actions(ACTION_CANCEL, ACTION_YES)
-                .showConfirm();*/
-        /*if (response == ACTION_YES) {
-
-        } else {
-        }*/
 
     }
 
