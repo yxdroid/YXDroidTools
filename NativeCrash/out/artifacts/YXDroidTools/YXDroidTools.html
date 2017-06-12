@@ -3,7 +3,7 @@
 <script>
     function launchApplication(jnlpfile) {
         dtjava.launch(            {
-                url : 'NativeCrash.jnlp'
+                url : 'YXDroidTools.jnlp'
             },
             {
                 javafx : '8.0+'
@@ -15,14 +15,14 @@
 </script>
 
 <script>
-    function javafxEmbed_NativeCrash_id() {
+    function javafxEmbedYXDroidTools_id() {
         dtjava.embed(
             {
-                id : 'NativeCrash_id',
-                url : 'NativeCrash.jnlp',
+                id : 'YXDroidTools_id',
+                url : 'YXDroidTools.jnlp',
                 placeholder : 'javafx-app-placeholder',
-                width : 600,
-                height : 400
+                width : '600',
+                height : '400'
             },
             {
                 javafx : '8.0+'
@@ -31,12 +31,12 @@
         );
     }
     <!-- Embed FX application into web page once page is loaded -->
-    dtjava.addOnloadCallback(javafxEmbed_NativeCrash_id);
+    dtjava.addOnloadCallback(javafxEmbedYXDroidTools_id);
 </script>
 
 </head><body>
-<h2>Test page for <b>NativeCrash</b></h2>
-  <b>Webstart:</b> <a href='NativeCrash.jnlp' onclick="return launchApplication('NativeCrash.jnlp');">click to launch this app as webstart</a><br><hr><br>
+<h2>Test page for <b>YXDroidTools</b></h2>
+  <b>Webstart:</b> <a href='YXDroidTools.jnlp' onclick="return launchApplication('YXDroidTools.jnlp');">click to launch this app as webstart</a><br><hr><br>
 
   <!-- Applet will be inserted here -->
   <div id='javafx-app-placeholder'></div>

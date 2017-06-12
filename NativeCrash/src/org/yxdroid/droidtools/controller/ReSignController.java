@@ -9,18 +9,17 @@ package org.yxdroid.droidtools.controller;/**
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
-import org.controlsfx.control.action.Action;
-import org.controlsfx.dialog.Dialogs;
 import org.yxdroid.droidtools.os.OSinfo;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
-
-import static org.controlsfx.dialog.Dialog.ACTION_CANCEL;
-import static org.controlsfx.dialog.Dialog.ACTION_YES;
 
 public class ReSignController extends BaseController {
 
@@ -52,7 +51,7 @@ public class ReSignController extends BaseController {
 
     private String reName() {
         String apkName = edtInput.getText().toString().trim();
-        return apkName.replace(".apk","") + "_sign.apk";
+        return apkName.replace(".apk", "") + "_sign.apk";
     }
 
     public void onOutput(ActionEvent event) {
@@ -64,7 +63,7 @@ public class ReSignController extends BaseController {
         }
     }
 
-    public void onSign(ActionEvent event) throws IOException {
+    public void onSign(ActionEvent event) throws IOException, URISyntaxException {
         if (isEmpty(apkPath)) {
             showTip("提示", null, "请选择签名APK文件");
             return;
@@ -76,30 +75,60 @@ public class ReSignController extends BaseController {
             return;
         }
 
-        if(!outPath.endsWith(".apk")) {
-            showTip("提示", null,"输出文件不是APK文件");
+        if (!outPath.endsWith(".apk")) {
+            showTip("提示", null, "输出文件不是APK文件");
             edtOutput.selectEnd();
             return;
         }
 
-        File outDir = new File(outPath).getParentFile();
+        File outPathFile = new File(outPath);
+        if (outPathFile.exists()) {
+            outPathFile.delete();
+        }
 
-        Action response = Dialogs.create()
+        String signJar = loadFile("signapk.jar");
+        String pem = loadFile("platform.x509.pem");
+        String pk8 = loadFile("platform.pk8");
+        String runResult = null;
+        try {
+            runResult = runCmd(String.format("java -jar %s %s %s %s %s",
+                    signJar, pem, pk8, apkPath, outPath));
+
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("提示");
+            alert.setHeaderText("签名成功!");
+            alert.setContentText("是否打开已签名APK文件目录?");
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK) {
+                if (OSinfo.isMacOS() || OSinfo.isMacOSX()) {
+                    Runtime.getRuntime().exec("open " + outPathFile.getParentFile().getAbsolutePath());
+                } else if (OSinfo.isWindows()) {
+                    Runtime.getRuntime().exec("explorer.exe " + outPathFile.getParentFile().getAbsolutePath());
+                }
+            } else {
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (isEmpty(runResult)) {
+                showTip("提示", "签名失败!", e.getMessage());
+                return;
+            }
+        }
+
+
+        /*Action response = Dialogs.create()
                 .owner(stage)
                 .title("提示")
                 .masthead("签名成功!")
                 .message("是否打开已签名APK文件目录?")
                 .actions(ACTION_CANCEL, ACTION_YES)
-                .showConfirm();
+                .showConfirm();*/
+        /*if (response == ACTION_YES) {
 
-        if (response == ACTION_YES) {
-            if (OSinfo.isMacOS() || OSinfo.isMacOSX()) {
-                Runtime.getRuntime().exec("open " + outDir.getAbsolutePath());
-            } else if (OSinfo.isWindows()) {
-                Runtime.getRuntime().exec("explorer.exe " + outDir.getAbsolutePath());
-            }
         } else {
-        }
+        }*/
+
     }
 
     public void onCancel(ActionEvent event) {

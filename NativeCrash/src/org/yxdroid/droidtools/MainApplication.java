@@ -17,6 +17,8 @@ public class MainApplication extends Application {
 
     public static Stage app;
 
+    public static String initDir = "";
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.app = primaryStage;
