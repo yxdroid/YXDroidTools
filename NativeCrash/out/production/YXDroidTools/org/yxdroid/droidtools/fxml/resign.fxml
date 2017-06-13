@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
+<?import javafx.scene.effect.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
@@ -41,6 +43,5 @@
             <Font size="18.0" />
          </font>
       </Button>
-      <ProgressIndicator progress="0.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
     </children>
 </GridPane>

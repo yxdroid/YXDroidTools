@@ -7,11 +7,11 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.controlsfx.dialog.Dialogs;
 import org.yxdroid.droidtools.MainApplication;
+import org.yxdroid.droidtools.os.JarToolUtil;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -94,10 +94,12 @@ public abstract class BaseController implements Initializable, ControllerInit {
     protected String loadFile(String fileName) {
         File file = null;
         try {
-            file = new File(getClass().getClassLoader().getResource("cmd/" + fileName).toURI());
-        } catch (URISyntaxException e) {
+            //file = new File(getClass().getClassLoader().getResource("cmd/" + fileName).toURI());
+            file = new File(JarToolUtil.getJarDir(), "cmd" + File.separator + fileName);
+        } catch (Exception e) {
             e.printStackTrace();
         }
+        //FileUtil.writeStringToFile("F://", "path.txt", file.getAbsolutePath());
         //File cmdFile = new File(getClass().getClassLoader().getResource(fileName).toURI());
         return file.getAbsolutePath();
     }
