@@ -12,6 +12,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialogs;
 import org.yxdroid.droidtools.os.OSinfo;
@@ -20,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -38,6 +41,27 @@ public class ReSignController extends BaseController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        edtInput.setOnDragOver(event -> {
+            if (event.getGestureSource() != edtInput) {
+                Dragboard dragboard = event.getDragboard();
+                if (dragboard.hasFiles()) {
+                    List<File> files = dragboard.getFiles();
+                    File file = files.get(0);
+                    if (file.getName().endsWith(".apk")) {
+                        event.acceptTransferModes(TransferMode.ANY);
+                    }
+                }
+            }
+        });
+        edtInput.setOnDragDropped(event -> {
+            Dragboard dragboard = event.getDragboard();
+            if (dragboard.hasFiles()) {
+                List<File> files = dragboard.getFiles();
+                File file = files.get(0);
+                edtInput.setText(file.getName());
+                setOutputValue(file);
+            }
+        });
     }
 
     public void onInput(ActionEvent event) {
@@ -46,13 +70,18 @@ public class ReSignController extends BaseController {
 
             edtInput.setText(file.getName());
 
-            apkPath = file.getAbsolutePath();
-            edtOutput.setText(file.getParentFile().getAbsolutePath()
-                    + File.separator + reName());
-            edtInput.selectEnd();
-            edtOutput.selectEnd();
+            setOutputValue(file);
         }
     }
+
+    void setOutputValue(File file) {
+        apkPath = file.getAbsolutePath();
+        edtOutput.setText(file.getParentFile().getAbsolutePath()
+                + File.separator + reName());
+        edtInput.selectEnd();
+        edtOutput.selectEnd();
+    }
+
 
     private String reName() {
         String apkName = edtInput.getText().toString().trim();

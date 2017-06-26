@@ -3,9 +3,16 @@
     <output-path>$PROJECT_DIR$/out/artifacts/YXDroidTools</output-path>
     <properties id="javafx-properties">
       <options>
+        <option name="alias" value="" />
         <option name="appClass" value="org.yxdroid.droidtools.MainApplication" />
         <option name="description" value="" />
         <option name="htmlPlaceholderId" value="" />
+        <option name="icons">
+          <JavaFxApplicationIcons>
+            <option name="windowsIcon" value="$PROJECT_DIR$/resources/app.ico" />
+          </JavaFxApplicationIcons>
+        </option>
+        <option name="keystore" value="" />
         <option name="nativeBundle" value="exe" />
         <option name="title" value="YXDroidTools" />
         <option name="updateMode" value="always" />

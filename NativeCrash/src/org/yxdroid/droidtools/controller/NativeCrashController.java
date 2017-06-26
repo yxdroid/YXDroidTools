@@ -3,11 +3,14 @@ package org.yxdroid.droidtools.controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import sun.awt.OSInfo;
 
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class NativeCrashController extends BaseController {
@@ -22,19 +25,42 @@ public class NativeCrashController extends BaseController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        edtSoPath.setOnDragOver(event -> {
+            if (event.getGestureSource() != edtSoPath) {
+                Dragboard dragboard = event.getDragboard();
+                if (dragboard.hasFiles()) {
+                    List<File> files = dragboard.getFiles();
+                    File file = files.get(0);
 
-
+                    if (file.getName().endsWith(".so")) {
+                        event.acceptTransferModes(TransferMode.ANY);
+                    }
+                }
+            }
+        });
+        edtSoPath.setOnDragDropped(event -> {
+            Dragboard dragboard = event.getDragboard();
+            if (dragboard.hasFiles()) {
+                List<File> files = dragboard.getFiles();
+                File file = files.get(0);
+                setSoPath(file);
+            }
+        });
     }
 
     @FXML
     public void onOpenSoPath(ActionEvent event) {
         File file = openFileChooser("SO files (*.so)", "*.so");
         if (file != null) {
-            soPath = file.getAbsolutePath();
-            edtSoPath.setText(file.getName());
-            edtSoPath.selectEnd();
-            System.out.println(file);
+            setSoPath(file);
         }
+    }
+
+    void setSoPath(File file) {
+        soPath = file.getAbsolutePath();
+        edtSoPath.setText(file.getName());
+        edtSoPath.selectEnd();
+        System.out.println(file);
     }
 
     @FXML
