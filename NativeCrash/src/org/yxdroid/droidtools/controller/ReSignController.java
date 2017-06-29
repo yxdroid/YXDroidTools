@@ -60,10 +60,18 @@ public class ReSignController extends BaseController {
             if (dragboard.hasFiles()) {
                 List<File> files = dragboard.getFiles();
                 File file = files.get(0);
-                edtInput.setText(file.getName());
                 setOutputValue(file);
             }
         });
+    }
+
+    @Override
+    public void initValue(String value) {
+        super.initValue(value);
+        if (isEmpty(value)) {
+            return;
+        }
+        setOutputValue(new File(value));
     }
 
     public void onInput(ActionEvent event) {
@@ -77,6 +85,7 @@ public class ReSignController extends BaseController {
     }
 
     void setOutputValue(File file) {
+        edtInput.setText(file.getName());
         apkPath = file.getAbsolutePath();
         edtOutput.setText(file.getParentFile().getAbsolutePath()
                 + File.separator + reName());

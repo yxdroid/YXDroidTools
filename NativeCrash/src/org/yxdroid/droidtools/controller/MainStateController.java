@@ -30,15 +30,15 @@ public class MainStateController implements Initializable {
 
     @FXML
     public void onNativeCrash(ActionEvent event) throws IOException {
-        jumpStage("native_crash.fxml", "Native Crash");
+        jumpStage("native_crash.fxml", "Native Crash", null);
     }
 
     @FXML
     public void onReSign(ActionEvent event) throws IOException {
-        jumpStage("resign.fxml", "重签名");
+        jumpStage("resign.fxml", "重签名", null);
     }
 
-    private void jumpStage(String stageFxml, String title) {
+    public void jumpStage(String stageFxml, String title, String initValue) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("fxml/" + stageFxml));
             Parent root = fxmlLoader.load();
@@ -51,6 +51,7 @@ public class MainStateController implements Initializable {
 
             BaseController controller = fxmlLoader.getController();
             controller.bindStage(stage);
+            controller.initValue(initValue);
 
             stage.setOnCloseRequest(event -> MainApplication.app.show());
             stage.setOnHidden(event -> MainApplication.app.show());

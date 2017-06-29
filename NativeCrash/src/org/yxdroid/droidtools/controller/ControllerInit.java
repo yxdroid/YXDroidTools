@@ -12,4 +12,6 @@ import javafx.stage.Stage;
  */
 public interface ControllerInit {
     void bindStage(Stage stage);
+
+    void initValue(String value);
 }

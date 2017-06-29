@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="YXDroidTools.jar" size="33388" download="eager" />
+    <jar href="YXDroidTools.jar" size="35505" download="eager" />
     <jar href="controlsfx-8.20.9.jar" size="1018351" download="eager" />
     <jar href="openjfx-dialogs-1.0.3.jar" size="149178" download="eager" />
   </resources>

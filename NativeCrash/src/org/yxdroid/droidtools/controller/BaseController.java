@@ -1,12 +1,11 @@
 package org.yxdroid.droidtools.controller;
 
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.controlsfx.dialog.Dialogs;
 import org.yxdroid.droidtools.MainApplication;
+import org.yxdroid.droidtools.os.DialogUtil;
 import org.yxdroid.droidtools.os.JarToolUtil;
 
 import java.io.BufferedReader;
@@ -37,6 +36,11 @@ public abstract class BaseController implements Initializable, ControllerInit {
         this.stage = stage;
     }
 
+    @Override
+    public void initValue(String value) {
+
+    }
+
     protected File openFileChooser(String name, String suffix) {
         FileChooser fileChooser = new FileChooser();
         if (!isEmpty(MainApplication.initDir)) {
@@ -65,28 +69,7 @@ public abstract class BaseController implements Initializable, ControllerInit {
 
 
     protected void showTip(String title, String masthead, String message) {
-        /*Dialogs.create()
-                .owner(stage)
-                .title(title)
-                .masthead(masthead)
-                .message(message)
-                .showInformation();*/
-        try {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle(title);
-            alert.setHeaderText(masthead);
-            alert.setContentText(message);
-
-            alert.showAndWait();
-        } catch (Exception e) {
-            // 兼容jdk 8u40 和 8u20 对话框使用
-            Dialogs.create()
-                    .owner(stage)
-                    .title(title)
-                    .masthead(masthead)
-                    .message(message)
-                    .showInformation();
-        }
+        DialogUtil.showTip(stage, title, masthead, message);
     }
 
     // http://code.makery.ch/blog/javafx-8-dialogs/ 对话框使用方式

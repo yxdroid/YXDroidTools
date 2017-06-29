@@ -48,6 +48,15 @@ public class NativeCrashController extends BaseController {
         });
     }
 
+    @Override
+    public void initValue(String value) {
+        super.initValue(value);
+        if (isEmpty(value)) {
+            return;
+        }
+        setSoPath(new File(value));
+    }
+
     @FXML
     public void onOpenSoPath(ActionEvent event) {
         File file = openFileChooser("SO files (*.so)", "*.so");
