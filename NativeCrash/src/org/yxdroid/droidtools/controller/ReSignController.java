@@ -16,6 +16,7 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialogs;
+import org.yxdroid.droidtools.ThreadExecutorPool;
 import org.yxdroid.droidtools.os.OSinfo;
 
 import java.io.File;
@@ -25,6 +26,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.concurrent.Future;
 
 import static org.controlsfx.dialog.Dialog.ACTION_CANCEL;
 import static org.controlsfx.dialog.Dialog.ACTION_YES;
@@ -123,10 +125,14 @@ public class ReSignController extends BaseController {
         String signJar = loadFile("signapk.jar");
         String pem = loadFile("platform.x509.pem");
         String pk8 = loadFile("platform.pk8");
+
         String runResult = null;
         try {
-            runResult = runCmd(String.format("java -jar %s %s %s %s %s",
-                    signJar, pem, pk8, apkPath, outPath));
+            Future<String> future = ThreadExecutorPool.getInstance()
+                    .submit(() -> runCmd(String.format("java -jar %s %s %s %s %s",
+                            signJar, pem, pk8, apkPath, outPath)));
+
+            runResult = future.get();
 
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("提示");
